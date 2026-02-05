@@ -2,6 +2,7 @@
 
 # Compiled output
 /dist
+/.angular/
 /tmp
 /out-tsc
 /bazel-out
@@ -40,3 +41,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Entornos
+.env

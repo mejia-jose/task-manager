@@ -1,0 +1,77 @@
+<div class="login-wrapper d-flex align-items-center justify-content-center">
+  <div class="card border-0 shadow-lg p-4 login-card">
+    
+    <div class="text-center mb-4">
+      <div class="brand-logo mb-3">
+        <i class="bi bi-person-plus-fill text-primary fs-1"></i>
+      </div>
+      <h2 class="fw-bold">Crear Cuenta</h2>
+      <p class="text-muted">Regístrate para comenzar a gestionar tus tareas</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
+      
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Nombre completo</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="bi bi-person text-muted"></i>
+          </span>
+          <input type="text" formControlName="name"class="form-control bg-light border-start-0" 
+            [class.is-invalid]="registerForm.get('name')?.touched && registerForm.get('name')?.invalid"
+            placeholder="Ej. Juan Ortiz">
+        </div>
+        
+        @if (registerForm.get('name')?.touched && registerForm.get('name')?.invalid) {
+          <div class="text-danger mt-1 small">
+            @if (registerForm.get('name')?.errors?.['required']) {
+              El nombre es obligatorio.
+            } @else if (registerForm.get('name')?.errors?.['minlength']) {
+              El nombre debe tener al menos 3 caracteres.
+            }
+          </div>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Correo electrónico</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="bi bi-envelope text-muted"></i>
+          </span>
+          <input type="email" formControlName="email" class="form-control bg-light border-start-0" 
+            [class.is-invalid]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
+            placeholder="jose@gamil.com">
+        </div>
+
+        @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+          <div class="text-danger mt-1 small">
+            @if (registerForm.get('email')?.errors?.['required']) {
+              El correo es obligatorio.
+            } @else if (registerForm.get('email')?.errors?.['email']) {
+              El correo electrónico no es válido.
+            }
+          </div>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" [disabled]="registerForm.invalid || isLoading()">
+        @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Creando cuenta...
+        } @else {
+          Registrarme
+        }
+      </button>
+
+      <div class="text-center mt-4">
+        <p class="text-muted small">
+          ¿Ya tienes una cuenta? 
+          <a routerLink="/login" class="text-primary fw-bold text-decoration-none hover-link">
+            Inicia sesión
+          </a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
