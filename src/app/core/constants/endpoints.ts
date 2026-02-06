@@ -4,6 +4,7 @@ export const API_ENDPOINTS =
     {
         LOGIN: 'auth/login',
         REGISTER: 'user',
+        LOGOUT: 'auth/logout'
     },
     TASKS:
     {

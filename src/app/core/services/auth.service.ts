@@ -18,11 +18,13 @@ export class AuthService
 
     private readonly URL_LOGIN = `${environment.apiUrl}/${API_ENDPOINTS.AUTH.LOGIN}`;
     private readonly URL_REGISTER = `${environment.apiUrl}/${API_ENDPOINTS.AUTH.REGISTER}`;
+    private readonly URL_LOGOUT = `${environment.apiUrl}/${API_ENDPOINTS.AUTH.LOGOUT}`;
     private readonly KEY_SESSION_USER = 'user_data_auth';
 
     /** Se guarda el objeto en signal, para mantener la sesión del usuario **/
     private _dataUser = signal<UserSession | null>(this.getUserSession());
 
+    /** permite validar el usuario logueado y obtener la información del mismo **/
     public currentUser = computed(() => this._dataUser());
     public thisIsAuthenticated = computed(() => !!this._dataUser());
 
@@ -76,10 +78,22 @@ export class AuthService
     /** Permite destruir la sesión del usuario **/
     logout()
     {
-        localStorage.removeItem(this.KEY_SESSION_USER);
-        this._dataUser.set(null);
-    }
+        const user = this.getInfoUser();
 
+        const headers = {
+            'x-user-email': user.email,
+            'x-user-id': user.userId
+        };
+
+        /** Consume el endpoint y destruye la sesión del usuario **/
+        return this.http.post(this.URL_LOGOUT, {}, { headers }).pipe(
+            tap(() => {
+                localStorage.removeItem(this.KEY_SESSION_USER);
+                this._dataUser.set(null);
+            })
+        );
+    }
+    
     /** Obtiene y retorna la información del usaurio */
     getInfoUser()
     {
@@ -95,5 +109,10 @@ export class AuthService
             email: user.email,
             name: user.name
         }
+    }
+
+    getKeySession()
+    {
+        return this.KEY_SESSION_USER;
     }
 }
