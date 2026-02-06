@@ -1,11 +1,11 @@
-import { inject, Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { inject, Injectable, signal } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { tap } from "rxjs";
 
 import { AuthService } from "./auth.service";
 import { environment } from "../../../environments/environment";
 import { API_ENDPOINTS } from "../constants/endpoints";
-import { ApiTaskResponse } from "../interfaces/task.interface";
+import { ApiTaskResponse, IGetTaskResponse } from "../interfaces/task.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -19,24 +19,41 @@ export class TaskService
     private authService = inject(AuthService);
 
     private readonly URL_ADD_TASK = `${environment.apiUrl}/${API_ENDPOINTS.TASKS.CREATE}`;
+    private readonly URL_GET_ALL_TASK = `${environment.apiUrl}/${API_ENDPOINTS.TASKS.LIST}`;
 
-   private getHeader(): HttpHeaders 
-   {
-        const user = this.authService.currentUser();
-        
+    private getHeader(): HttpHeaders 
+    {        
+        const { userId, email } = this.authService.getInfoUser();
         return new HttpHeaders({
-            'x-user-id': user?.userId || '',
-            'x-user-email': user?.email || ''
+            'x-user-id': userId || '',
+            'x-user-email': email || ''
         });
     }
+
+    /** Permite obtener el listado de tareas del usuario logueado **/
+    getAllTask() 
+    {
+        try {
+            const { userId } = this.authService.getInfoUser();
+
+            const queryParams = new HttpParams().set('userId', userId);
+            
+            return this.http.get<IGetTaskResponse>(this.URL_GET_ALL_TASK, { 
+                headers: this.getHeader(),
+                params: queryParams
+            });
+
+        } catch (error: any) 
+        {
+            console.error(error.message);
+            throw error; 
+        }
+    }
+    
     /**Permite realizar el registro de nuevas tareas, consumiendo el endpoint de registrar tareas **/
     addTask(title: string, description: string) 
     {
-        const userId = this.authService.currentUser()?.userId;
-
-        if (!userId) {
-            throw new Error('No se encontró un usuario autenticado para crear la tarea.');
-        }
+        const { userId } = this.authService.getInfoUser();
 
         const taskPayload = { title, description, userId };
         const headers = this.getHeader();

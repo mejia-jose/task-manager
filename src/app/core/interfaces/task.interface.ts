@@ -16,3 +16,21 @@ export interface ApiTaskResponse
         };
     };
 }
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: 'Pendiente' | 'Completada';
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+}
+
+export interface IGetTaskResponse
+{
+    success: boolean;
+    messages: string;
+    data : Task[];
+}

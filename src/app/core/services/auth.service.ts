@@ -79,4 +79,20 @@ export class AuthService
         localStorage.removeItem(this.KEY_SESSION_USER);
         this._dataUser.set(null);
     }
+
+    /** Obtiene y retorna la información del usaurio */
+    getInfoUser()
+    {
+        const user = this.currentUser();
+
+        if(!user || !user.userId || !user.email)
+        {
+            throw new Error('No se ha podido obtener la información del usuario.');
+        }
+
+        return { 
+            userId: user.userId, 
+            email: user.email
+        }
+    }
 }

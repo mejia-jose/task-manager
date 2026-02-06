@@ -4,15 +4,7 @@ import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angu
 
 import { TaskService } from '../../../../core/services/tasks.service';
 import { AlertService } from '../../../../core/services/alert.service';
-import { HttpHeaders } from '@angular/common/http';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  createdAt: Date;
-  completed: boolean;
-}
+import { ApiTaskResponse, IGetTaskResponse, Task } from '../../../../core/interfaces/task.interface';
 
 @Component({
   selector: 'app-task',
@@ -28,17 +20,62 @@ export class ManageTaskComponent
   private taskService = inject(TaskService);
   private alertService = inject(AlertService);
 
+  /** Se realiza la definicion del formulario reactivo **/
   taskForm = this.fb.nonNullable.group({
     title: ['', [Validators.required]],
     description: ['']
   });
 
-  isLoading = signal(false);
-
-  /** Variable para editar **/
+  /** Se definen los signals para manejar el estado del componente **/
   isEditing = signal(false);
   editingId: number | null = null;
+  isLoading = signal(false);
+  taskId = signal('');
+  public tasks = signal<Task[]>([]);
+
+  ngOnInit() {
+    this.loadTasks();
+  }
+
+  /** Permite obtener el listado de tareas del usuario */
+  loadTasks()
+  {
+    this.taskService.getAllTask().subscribe({
+      next: (response: IGetTaskResponse) => 
+      {
+        const tasksList = response.data; 
+        if (Array.isArray(tasksList)) {
+          this.tasks.set(tasksList);
+        }
+
+        this.alertService.toast({
+          title: 'Listado de tareas.',
+          text: response.messages || 'Tareas cargadas.',
+          icon: 'success',
+        });
+      },
+      error: (err) => { 
+        this.alertService.toast({
+          title: 'Listado de tareas.',
+          text: err.messages || 'Tareas cargadas.',
+          icon: 'success',
+        });
+      }
+    });
+  }
+
+  /** Permite setear los datos de la tarea en el formulario **/
+  editTask(item:Task)
+  {
+    this.isEditing.set(true);
+    this.taskId.set(item.id);
+    this.taskForm.patchValue({
+      title: item.title,
+      description: item.description
+    });
+  }
   
+  /** Gestiona el envío del formulario, determinando si debe crear una nueva tarea o actualizar una existente */
   onSubmit()
   {
     if(this.taskForm.valid)
@@ -53,7 +90,6 @@ export class ManageTaskComponent
       }
     }
   }
-
 
   /** Permite añadir nuevas tareas **/
   addTask()
@@ -89,6 +125,6 @@ export class ManageTaskComponent
   /** Permite actualizar la información de una tarea **/
   updateTask()
   {
-
+    
   }
 }
