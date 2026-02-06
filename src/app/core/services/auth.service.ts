@@ -17,7 +17,7 @@ export class AuthService
     private http = inject(HttpClient);
 
     private readonly URL_LOGIN = `${environment.apiUrl}/${API_ENDPOINTS.AUTH.LOGIN}`;
-    private readonly URL_REGISTER = `${environment.apiUrl}/${API_ENDPOINTS.AUTH.LOGIN}`;
+    private readonly URL_REGISTER = `${environment.apiUrl}/${API_ENDPOINTS.AUTH.REGISTER}`;
     private readonly KEY_SESSION_USER = 'user_data_auth';
 
     /** Se guarda el objeto en signal, para mantener la sesión del usuario **/
@@ -67,6 +67,16 @@ export class AuthService
     /**Permite realizar el registro de usuarios, consumiendo el endpoint de registrar usuarios **/
     register(name: string, email: string)
     {
-        return this.http.post(this.URL_REGISTER, { name, email});
+        return this.http.post<ApiResponse>(this.URL_REGISTER, {email, name}).pipe(
+            tap(response => {
+                if(!response.success || !response.detail.data)
+                {
+                    throw new Error(response.messages);
+                }
+
+                const { id, email } = response.detail.data;
+                this.saveSessionUser({ userId: id,email});
+            })
+        );
     }
 }
