@@ -90,14 +90,14 @@
     - Sweet Alert2  11+: Utilizado para mostrar toast y alertas de confirmación y mensajes de exito o de error
 
 # Configuración del Proyecto
-    - Clonar el repositorio
-        ```bash
+- Clonar el repositorio
+    ```bash
         git clone https://github.com/mejia-jose/task-manager.git
 
-    - Instalar dependencias
+- Instalar dependencias
         npm install
 
-    - Ejecutar la aplicación
+- Ejecutar la aplicación
         ng serve
 
 # Repositorio:
