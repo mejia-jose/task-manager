@@ -1,16 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Observer } from 'rxjs';
 
 import { TaskService } from '../../../../core/services/tasks.service';
 import { AlertService } from '../../../../core/services/alert.service';
 import { ApiTaskResponse, IGetTaskResponse, Task, TaskStatusUpdate } from '../../../../core/interfaces/task.interface';
-import { Observer } from 'rxjs';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [CommonModule, FormsModule,ReactiveFormsModule],
+  imports: [HeaderComponent, CommonModule, FormsModule,ReactiveFormsModule],
   templateUrl: './manage-tasks.component.html',
   styleUrl: './manage-tasks.component.scss'
 })
@@ -18,6 +20,7 @@ import { Observer } from 'rxjs';
 export class ManageTaskComponent 
 {
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
   private taskService = inject(TaskService);
   private alertService = inject(AlertService);
 
@@ -27,6 +30,8 @@ export class ManageTaskComponent
     description: ['']
   });
 
+  public nameUser : string | null = '';
+
   /** Se definen los signals para manejar el estado del componente **/
   isEditing = signal(false);
   editingId: number | null = null;
@@ -34,7 +39,10 @@ export class ManageTaskComponent
   taskId = signal('');
   public tasks = signal<Task[]>([]);
 
-  ngOnInit() {
+  ngOnInit() 
+  {
+    const { name } = this.authService.getInfoUser()
+    this.nameUser = name;
     this.loadTasks();
   }
 

@@ -2,3 +2,33 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
+
+/* 1. Definimos el contenedor que tendrá el scroll */
+.scroll-container {
+    max-height: 400px; 
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* 2. El ancho de la barra de scroll */
+.scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* 3. El fondo de la barra (Track) */
+.scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+/* 4. La parte que se mueve (Handle/Thumb) */
+.scroll-container::-webkit-scrollbar-thumb {
+    background: #ccc; /* Color gris suave */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+/* 5. Color más oscuro cuando el usuario pasa el mouse */
+.scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #0d6efd; /* Azul de Bootstrap para que combine con tu Header */
+}

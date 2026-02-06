@@ -37,8 +37,8 @@ export class AuthService
                     throw new Error(response.messages);
                 }
 
-                const { id, email } = response.detail.data;
-                this.saveSessionUser({ userId: id,email});
+                const { id, email, name } = response.detail.data;
+                this.saveSessionUser({ userId: id,email, name});
             })
         );
     }
@@ -53,8 +53,8 @@ export class AuthService
                     throw new Error(response.messages);
                 }
 
-                const { id, email } = response.detail.data;
-                this.saveSessionUser({ userId: id,email});
+                const { id, email, name } = response.detail.data;
+                this.saveSessionUser({ userId: id,email, name});
             })
         );
     }
@@ -74,7 +74,7 @@ export class AuthService
     }
 
     /** Permite destruir la sesión del usuario **/
-    private logout()
+    logout()
     {
         localStorage.removeItem(this.KEY_SESSION_USER);
         this._dataUser.set(null);
@@ -92,7 +92,8 @@ export class AuthService
 
         return { 
             userId: user.userId, 
-            email: user.email
+            email: user.email,
+            name: user.name
         }
     }
 }
