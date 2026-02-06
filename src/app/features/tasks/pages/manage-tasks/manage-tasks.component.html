@@ -1,0 +1,46 @@
+<div class="body-wrapper d-flex align-items-center justify-content-center">
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-4 col-lg-4">
+      
+      <div class="card shadow-sm border-0 mb-5 p-4">
+        <h4 class="fw-bold mb-3 text-primary">
+          {{ isEditing() ? 'Editar tarea' : 'Nueva tarea' }}
+        </h4>
+        
+        <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" novalidate>
+          <div class="mb-3">
+            <input
+              type="text"
+              formControlName="title"
+              placeholder="Título de la tarea"
+              class="form-control mb-2"
+              [class.is-invalid]="taskForm.get('title')?.touched && taskForm.get('title')?.invalid"
+            />
+
+            <textarea formControlName="description" class="form-control" placeholder="Descripción (opcional)" ></textarea>
+          </div>
+
+          <div class="d-flex gap-2">
+            @if (isEditing()) {
+              <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm" [disabled]="taskForm.invalid || isLoading()">
+                Guardar cambios
+              </button>
+
+              <button type="button" class="btn btn-light w-100"> Cancelar </button>
+            } @else {
+              <button
+                type="submit"
+                class="btn btn-primary w-100 py-2 fw-bold shadow-sm"
+                [disabled]="taskForm.invalid || isLoading()"
+              >
+                Añadir tarea
+              </button>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
