@@ -108,4 +108,4 @@
 
     - La aplicación fue desplegada en **Vercel** debido a su integración sencilla con proyectos frontend y despliegues automáticos a partir del repositorio.
 
-    - **URL:** (https://task-manager-lyart-psi.vercel.app)
+    - Url:([https://github.com/mejia-jose/task-manager](https://task-manager-lyart-psi.vercel.app))
