@@ -4,7 +4,7 @@ import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angu
 
 import { TaskService } from '../../../../core/services/tasks.service';
 import { AlertService } from '../../../../core/services/alert.service';
-import { ApiTaskResponse, IGetTaskResponse, Task } from '../../../../core/interfaces/task.interface';
+import { ApiTaskResponse, IGetTaskResponse, Task, TaskStatusUpdate } from '../../../../core/interfaces/task.interface';
 import { Observer } from 'rxjs';
 
 @Component({
@@ -119,6 +119,7 @@ export class ManageTaskComponent
     }
   }
 
+  /** Método que permite reutlizar la logica para las respuesta de agregar y actualizar tarea */
   handleTaskResponse(title: string, text: string): Partial<Observer<any>>
   {
     return {
@@ -142,8 +143,33 @@ export class ManageTaskComponent
           text: messages,
           icon: 'error',
         });
+        this.loadTasks(false);
       }
     }
+  }
+
+  /** Permite abrir el modal de confirmación de eliminación y actualiza el estado de la tarea **/
+  async deleteTask(taskId: string, status: TaskStatusUpdate)
+  {
+    const result = await this.alertService.modalConfirm(
+      '¿Eliminar tarea?', 
+      'Esta acción no se puede deshacer y la información se perderá permanentemente.'
+    );
+
+    if(result)
+    {
+      this.taskService.updateStatus(taskId,status).subscribe(
+        this.handleTaskResponse('Eliminar tarea', 'La tarea ha sido eliminada correctamente.')
+      );
+    }
+  }
+
+  /** Permite cambiar el estado de una tarea a completado **/
+  async isComplete(taskId: string, status: TaskStatusUpdate)
+  {
+    this.taskService.updateStatus(taskId,status).subscribe(
+      this.handleTaskResponse('Tarea completada', 'La tarea ha sido marcada como completada.')
+    );
   }
 
   /** Permite limpiar el formulario */

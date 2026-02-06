@@ -23,4 +23,23 @@ export class AlertService
             position: 'top-end'
         });
     }
+
+    /** Modal de confirmación **/
+    async modalConfirm(title: string, text: string,) 
+    {
+        const result = await Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, continuar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        });
+
+        return result.isConfirmed;
+    }
+
 }

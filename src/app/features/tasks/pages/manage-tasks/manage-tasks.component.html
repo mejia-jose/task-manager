@@ -23,7 +23,12 @@
 
           <div class="d-flex gap-2">
             @if (isEditing()) {
-              <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm" [disabled]="taskForm.invalid || isLoading()">
+              <button 
+                type="submit" 
+                class="btn btn-success w-100 py-2 fw-bold shadow-sm" 
+                [disabled]="taskForm.invalid || isLoading()"
+                aria-label="Modificar tarea"
+                >
                 Guardar cambios
               </button>
 
@@ -33,6 +38,7 @@
                 type="submit"
                 class="btn btn-primary w-100 py-2 fw-bold shadow-sm"
                 [disabled]="taskForm.invalid || isLoading()"
+                aria-label="Añadir tarea"
               >
                 Añadir tarea
               </button>
@@ -52,8 +58,14 @@
             <div class="card border-0 shadow-sm h-100" [class.bg-light]="item.status">
               <div class="card-body d-flex align-items-start gap-3">
                 
-                <input type="checkbox" [checked]="item.status === 'Completada'"
-                       class="form-check-input mt-2 flex-shrink-0 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  [checked]="item.status === 'Completada'" 
+                  (change)="isComplete(item.id, 'complete')"
+                  [disabled]="item.status === 'Completada'"
+                  aria-label="Marcar tarea como completada"
+                  class="form-check-input mt-2 flex-shrink-0 cursor-pointer"
+                >
 
                 <div class="flex-grow-1">
                   <div class="d-flex justify-content-between align-items-start">
@@ -72,10 +84,21 @@
                       <i class="bi bi-calendar3"></i> {{ item.createdAt | date:'short' }}
                     </small>
                     <div class="btn-group">
-                      <button (click)="editTask(item)" class="btn btn-sm btn-outline-secondary border-0">
+                      <button (click)="editTask(item)"
+                        class="btn btn-sm btn-outline-secondary border-0"
+                        [disabled]="item.status === 'Completada'"
+                        [attr.aria-label]="item.status === 'Completada' 
+                        ? 'No se puede editar, la tarea ya está completada' : 'Editar tarea: ' + item.title"
+                      >
                         <i class="bi bi-pencil"></i>
                       </button>
-                      <button  class="btn btn-sm btn-outline-danger border-0">
+                      <button 
+                        (click)="deleteTask(item.id,'cancel')" 
+                        class="btn btn-sm btn-outline-danger border-0"
+                        [disabled]="item.status === 'Completada'"
+                        [attr.aria-label]="item.status === 'Completada' 
+                        ? 'No se puede eliminar, la tarea ya está completada' : 'Eliminar tarea: ' + item.title"
+                      >
                         <i class="bi bi-trash"></i>
                       </button>
                     </div>

@@ -41,3 +41,5 @@ export interface IUpdateTask
     title: string;
     description?: string;
 }
+
+export type TaskStatusUpdate = 'complete' | 'cancel';

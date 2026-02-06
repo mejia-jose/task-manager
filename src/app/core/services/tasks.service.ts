@@ -84,4 +84,23 @@ export class TaskService
             })
         );
     }
+
+    /** Permite actualizar el estado de una tarea **/
+    updateStatus(taskId: string, status: 'complete' | 'cancel')
+    {
+        const url =  `${environment.apiUrl}/${API_ENDPOINTS.TASKS.UPDATE}/${taskId}/${status}`;
+        console.log(url)
+        const errorDefault = status === 'complete' ? 'Error al actualizar el estado de la tarea.' : 'Error al eliminar la tarea.';
+
+        return this.http.patch<ApiTaskResponse>(url, {},{ headers: this.getHeader() })
+        .pipe(
+            map(response => 
+            {
+                if (!response.success) {
+                    throw new Error(response.messages || errorDefault);
+                }
+                return response.detail.data; 
+            })
+        );
+    }
 }
