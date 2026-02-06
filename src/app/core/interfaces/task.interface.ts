@@ -34,3 +34,10 @@ export interface IGetTaskResponse
     messages: string;
     data : Task[];
 }
+
+export interface IUpdateTask
+{
+    taskId: string;
+    title: string;
+    description?: string;
+}

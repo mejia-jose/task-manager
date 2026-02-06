@@ -5,6 +5,7 @@ import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angu
 import { TaskService } from '../../../../core/services/tasks.service';
 import { AlertService } from '../../../../core/services/alert.service';
 import { ApiTaskResponse, IGetTaskResponse, Task } from '../../../../core/interfaces/task.interface';
+import { Observer } from 'rxjs';
 
 @Component({
   selector: 'app-task',
@@ -38,7 +39,7 @@ export class ManageTaskComponent
   }
 
   /** Permite obtener el listado de tareas del usuario */
-  loadTasks()
+  loadTasks(showMessages?: boolean)
   {
     this.taskService.getAllTask().subscribe({
       next: (response: IGetTaskResponse) => 
@@ -48,11 +49,14 @@ export class ManageTaskComponent
           this.tasks.set(tasksList);
         }
 
-        this.alertService.toast({
-          title: 'Listado de tareas.',
-          text: response.messages || 'Tareas cargadas.',
-          icon: 'success',
-        });
+        if(showMessages)
+        {
+            this.alertService.toast({
+            title: 'Listado de tareas.',
+            text: response.messages || 'Tareas cargadas.',
+            icon: 'success',
+          });
+        }
       },
       error: (err) => { 
         this.alertService.toast({
@@ -97,34 +101,56 @@ export class ManageTaskComponent
     const title = this.taskForm.value.title!;
     const description = this.taskForm.value.description!;
 
-    this.taskService.addTask(title,description).subscribe({
-        next: (res) => 
-        {
-          this.isLoading.set(false);
-
-          this.alertService.toast({
-            title: 'Creación de tareas.',
-            text: res.messages,
-            icon: 'success',
-          });
-        },
-        error: (err) => {
-          const { error } = err;
-          const messages = error.messages ?? 'Ha ocurrido un error inesperado.';
-          this.isLoading.set(false);
-          
-          this.alertService.toast({
-            title: 'Vaya...',
-            text: messages,
-            icon: 'error',
-          });
-        }
-      })
+    this.taskService.addTask(title,description).subscribe(
+      this.handleTaskResponse('Creación de tareas.', 'La tarea ha sido creada correctamente.')
+    );
   }
 
   /** Permite actualizar la información de una tarea **/
   updateTask()
   {
-    
+    const formData = this.taskForm.getRawValue();
+    const data = {  ...formData, taskId: this.taskId()};
+
+    if (this.taskId()) {
+      this.taskService.update(data).subscribe(
+        this.handleTaskResponse('Actualización exitosa.', 'La tarea ha sido actualizada correctamente.')
+      );
+    }
+  }
+
+  handleTaskResponse(title: string, text: string): Partial<Observer<any>>
+  {
+    return {
+      next: (res: ApiTaskResponse) =>
+      {
+        this.isLoading.set(false);
+        this.loadTasks(false);
+        this.alertService.toast({
+          title: title,
+          text: res.messages ?? text, 
+          icon: 'success',
+        });
+        this.resetForm();
+      },
+      error: (err: any) => 
+      {
+        const messages = err.error?.messages || err.message || 'Ha ocurrido un error inesperado.';
+        this.isLoading.set(false);
+        this.alertService.toast({
+          title: 'Vaya...',
+          text: messages,
+          icon: 'error',
+        });
+      }
+    }
+  }
+
+  /** Permite limpiar el formulario */
+  resetForm() 
+  {
+    this.taskForm.reset();
+    this.isEditing.set(false);
+    this.taskId.set('');
   }
 }

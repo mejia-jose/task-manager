@@ -1,11 +1,11 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { tap } from "rxjs";
+import { map, tap } from "rxjs";
 
 import { AuthService } from "./auth.service";
 import { environment } from "../../../environments/environment";
 import { API_ENDPOINTS } from "../constants/endpoints";
-import { ApiTaskResponse, IGetTaskResponse } from "../interfaces/task.interface";
+import { ApiTaskResponse, IGetTaskResponse, IUpdateTask } from "../interfaces/task.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +20,7 @@ export class TaskService
 
     private readonly URL_ADD_TASK = `${environment.apiUrl}/${API_ENDPOINTS.TASKS.CREATE}`;
     private readonly URL_GET_ALL_TASK = `${environment.apiUrl}/${API_ENDPOINTS.TASKS.LIST}`;
+    private readonly ULR_UPDATE_TASK = `${environment.apiUrl}/${API_ENDPOINTS.TASKS.UPDATE}`;
 
     private getHeader(): HttpHeaders 
     {        
@@ -59,7 +60,7 @@ export class TaskService
         const headers = this.getHeader();
 
         return this.http.post<ApiTaskResponse>(this.URL_ADD_TASK, taskPayload, {headers}).pipe(
-            tap(response =>
+            map(response =>
             {
                 if (!response.success) {
                     throw new Error(response.messages);
@@ -67,5 +68,20 @@ export class TaskService
                 return response.detail.data;
             })
         );
-  }
+    }
+
+    /** permite consumir el ednpoint que actualiza en la bd la información de una tarea **/
+    update(body: IUpdateTask)
+    {
+        return this.http.patch<ApiTaskResponse>(this.ULR_UPDATE_TASK, body, { headers: this.getHeader() })
+        .pipe(
+            map(response => 
+            {
+                if (!response.success) {
+                    throw new Error(response.messages || 'Error al actualizar la tarea');
+                }
+                return response.detail.data; 
+            })
+        );
+    }
 }
