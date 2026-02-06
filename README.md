@@ -30,7 +30,8 @@
 
 - Esta arquitectura organiza el código por dominios funcionales en lugar de hacerlo por tipo de archivo.
 
-- Estructura de directorios: 
+- Estructura de directorios:
+    ```bash
     src/app/
     ├── core/              # Servicios globales, guards, interfaces(contratos), entre otros.
     ├── features/  	       # Funcionalidades principales del sistema (Auth, Tareas, etc.).
@@ -40,20 +41,20 @@
     └── environments/      # Configuración globales.
 
 - ¿Por qué se decidió usar esta arquitectura?
-    - Escalabilidad
-        Permite agregar nuevas funcionalidades sin afectar módulos existentes, facilitando el crecimiento del proyecto.
+- Escalabilidad
+    Permite agregar nuevas funcionalidades sin afectar módulos existentes, facilitando el crecimiento del proyecto.
 
-    - Mantenibilidad
-        Al estar el código relacionado en un mismo lugar, es más fácil de entender, modificar y depurar.
+- Mantenibilidad
+    Al estar el código relacionado en un mismo lugar, es más fácil de entender, modificar y depurar.
 
-    - Separación de responsabilidades
-        Cada feature es responsable de su propio dominio, reduciendo el acoplamiento entre distintas partes de la aplicación.
+- Separación de responsabilidades
+    Cada feature es responsable de su propio dominio, reduciendo el acoplamiento entre distintas partes de la aplicación.
 
-    - Mejor experiencia para el desarrollador
-        - Facilita la compresión y entendimiento del proyecto de forma más rapida para los desarrolladores.
-    
-    - Facilidad de testear
-        - Facilita mejor la forma de hacer pruebas y debug
+- Mejor experiencia para el desarrollador
+    Facilita la compresión y entendimiento del proyecto de forma más rapida para los desarrolladores.
+
+- Facilidad de testear
+    Facilita mejor la forma de hacer pruebas y debug
 
 # Decisiones Técnicas y Por Qué
 
