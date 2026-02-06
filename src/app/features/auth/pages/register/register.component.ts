@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { AlertService } from '../../../../core/services/alert.service';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +19,7 @@ export class RegisterComponent
   private fb = inject(FormBuilder);
   private route = inject(Router);
   private authService = inject(AuthService);
+  private alertService = inject(AlertService);
   
   isLoading = signal(false);
 
@@ -40,32 +42,24 @@ export class RegisterComponent
         next: (res) => 
         {
           this.isLoading.set(false);
-          Swal.fire({
-            title: 'Bienvenido',
+
+          this.alertService.toast({
+            title: 'Creación de usuario.',
             text: res.messages,
             icon: 'success',
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            toast: true,           
-            position: 'top-end'
           });
+
           this.route.navigate(['/tasks']);
         },
         error: (err) => {
           const { error } = err;
           const messages = error.messages ?? 'Ha ocurrido un error inesperado.';
           this.isLoading.set(false);
-          console.log(err);
-          Swal.fire({
-            icon: 'error',
+          
+          this.alertService.toast({
             title: 'Vaya...',
             text: messages,
-            showConfirmButton: false,
-            timer: 5500,
-            timerProgressBar: true,
-            toast: true,           
-            position: 'top-end'
+            icon: 'error',
           });
         }
       });

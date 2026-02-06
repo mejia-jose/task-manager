@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { AlertService } from '../../../../core/services/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +17,9 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class LoginComponent 
 {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
   private route = inject(Router);
+  private authService = inject(AuthService);
+  private alertService = inject(AlertService);
   
   isLoading = signal(false);
 
@@ -27,6 +29,7 @@ export class LoginComponent
 
   onSubmit()
   {
+    /** Se valida la información del formulario **/
     if (this.loginForm.valid) 
     {
       this.isLoading.set(true);
@@ -37,16 +40,13 @@ export class LoginComponent
         next: (response) => 
         {
           this.isLoading.set(false);
-          Swal.fire({
+
+          this.alertService.toast({
             title: 'Bienvenido',
             text: response.messages,
             icon: 'success',
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            toast: true,           
-            position: 'top-end'
-          });
+          })
+          
           this.route.navigate(['/tasks']);
         },
         error: (err) =>
@@ -54,16 +54,11 @@ export class LoginComponent
           const { error } = err;
           const messages = error.messages ?? 'Ha ocurrido un error inesperado.';
           this.isLoading.set(false);
-          console.log(err);
-          Swal.fire({
-            icon: 'error',
+
+          this.alertService.toast({
             title: 'Vaya...',
             text: messages,
-            showConfirmButton: false,
-            timer: 3500,
-            timerProgressBar: true,
-            toast: true,           
-            position: 'top-end'
+            icon: 'error',
           });
         }
       });    

@@ -43,6 +43,22 @@ export class AuthService
         );
     }
 
+    /**Permite realizar el registro de usuarios, consumiendo el endpoint de registrar usuarios **/
+    register(name: string, email: string)
+    {
+        return this.http.post<ApiResponse>(this.URL_REGISTER, {email, name}).pipe(
+            tap(response => {
+                if(!response.success || !response.detail.data)
+                {
+                    throw new Error(response.messages);
+                }
+
+                const { id, email } = response.detail.data;
+                this.saveSessionUser({ userId: id,email});
+            })
+        );
+    }
+
     /** Permite obtener la sesión del usuario **/
     private getUserSession(): UserSession | null
     {
@@ -62,21 +78,5 @@ export class AuthService
     {
         localStorage.removeItem(this.KEY_SESSION_USER);
         this._dataUser.set(null);
-    }
-
-    /**Permite realizar el registro de usuarios, consumiendo el endpoint de registrar usuarios **/
-    register(name: string, email: string)
-    {
-        return this.http.post<ApiResponse>(this.URL_REGISTER, {email, name}).pipe(
-            tap(response => {
-                if(!response.success || !response.detail.data)
-                {
-                    throw new Error(response.messages);
-                }
-
-                const { id, email } = response.detail.data;
-                this.saveSessionUser({ userId: id,email});
-            })
-        );
     }
 }
