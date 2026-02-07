@@ -30,7 +30,6 @@ export class HeaderComponent implements OnInit
 
   destroyUserSession()
   {
-    console.log(this.authService.getKeySession())
     localStorage.removeItem(this.authService.getKeySession());
     this.router.navigate(['/login']);    
   }

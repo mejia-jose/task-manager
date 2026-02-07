@@ -187,4 +187,10 @@ export class ManageTaskComponent
     this.isEditing.set(false);
     this.taskId.set('');
   }
+  
+  /** Permite cancelar la editación de una tarea **/
+  cancelEdit()
+  {
+    this.resetForm();
+  }
 }
