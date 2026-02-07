@@ -103,6 +103,12 @@
     ```bash
         ng serve
 
+# Entrega y Despliegue Automático
+
+- Pipeline de CI/CD: Se configuró una integración automática con Vercel para el frontend y Firebase/Google Cloud para el backend, garantizando que cada cambio en la rama principal sea validado y desplegado sin intervención manual.
+
+- Optimización de Producción: El proceso de construcción utiliza técnicas de Tree Shaking para eliminar código muerto y Minificación de bundles, asegurando que la aplicación tenga un tiempo de carga mínimo y un rendimiento óptimo en dispositivos móviles.
+
 # Repositorio:
 
 - Url:(https://github.com/mejia-jose/task-manager)
